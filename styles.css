@@ -1,0 +1,218 @@
+/* Custom Styles and Glassmorphism */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+.dark ::-webkit-scrollbar-thumb {
+    background: #475569;
+}
+
+/* Glassmorphism Utilities */
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.dark .glass {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark .glass-card {
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+.glass-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.dark .glass-card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Input Fields */
+.input-glass {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(209, 213, 219, 0.5);
+    transition: all 0.2s;
+}
+
+.input-glass:focus {
+    background: white;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    outline: none;
+}
+
+.dark .input-glass {
+    background: rgba(30, 41, 59, 0.5);
+    border-color: rgba(71, 85, 105, 0.5);
+    color: white;
+}
+
+.dark .input-glass:focus {
+    background: rgba(30, 41, 59, 0.9);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-slide-in {
+    animation: slideInRight 0.3s ease-out forwards;
+}
+
+@keyframes scrollNotice {
+    0% { transform: translateY(350px); }
+    100% { transform: translateY(-100%); }
+}
+
+.notice-scroll-container {
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+    flex-grow: 1;
+}
+
+.notice-scroll-content {
+    animation: scrollNotice 10s linear infinite;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.notice-scroll-content:hover {
+    animation-play-state: paused;
+}
+
+/* Toast */
+.toast {
+    animation: slideInRight 0.3s ease-out forwards;
+}
+.toast.hide {
+    animation: fadeOut 0.3s ease-in forwards;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(20px); }
+}
+
+/* Custom Styles for Premium Look */
+.animation-delay-2000 {
+    animation-delay: 2s;
+}
+.animation-delay-4000 {
+    animation-delay: 4s;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.5);
+    border-radius: 10px;
+}
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.8);
+}
+
+/* Print Styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #result-print-area, #result-print-area * {
+        visibility: visible;
+    }
+    #result-print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    .print-bg {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+    /* Fix for tailwind modal cutoff */
+    #resultModal {
+        position: absolute !important;
+        background: transparent !important;
+        overflow: visible !important;
+        inset: auto !important;
+    }
+
+    body.printing-notice #notice-print-container,
+    body.printing-notice #notice-print-container * {
+        visibility: visible;
+    }
+    
+    body.printing-notice #notice-print-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background: white;
+    }
+}
+
+#notice-print-container {
+    display: none;
+}
+@media print {
+    #notice-print-container {
+        display: block;
+    }
+}

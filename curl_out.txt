@@ -1,0 +1,1 @@
+{"success":true,"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAwMSIsInJvbGUiOiJzdHVkZW50IiwiZXhwIjoxNzg1NTk2OTc5fQ.ry6eS33HFXOI7lmiHw3WH1blObsdHUGDWXVrLxcaaV4","user":{"id":"001","name":"Arnnav","role":"student","year":"+2 2nd year"}}
