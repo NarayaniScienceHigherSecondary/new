@@ -125,8 +125,6 @@ window.handleGenerateCertificate = (e) => {
                 </h1>
             </div>
             
-            <p style="font-size: 16px; margin-bottom: 15px; font-weight: bold;">Academic Year: <span style="border-bottom: 1px solid #000; padding: 0 10px;">${academicYear}</span></p>
-            
             <h2 style="font-size: 30px; color: #b91c1c; font-weight: bold; margin: 15px 0; letter-spacing: 2px;">CERTIFICATE OF ACHIEVEMENT</h2>
             
             <p style="font-size: 17px; line-height: 2.0; text-align: justify; margin: 0 30px;">
