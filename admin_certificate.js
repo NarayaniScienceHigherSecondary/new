@@ -101,8 +101,11 @@ window.handleGenerateCertificate = (e) => {
     let watermarkHTML = `<i class="fas fa-graduation-cap"></i>`;
     
     if (info.logoUrl) {
-        topIconHTML = `<img src="${info.logoUrl}" alt="College Logo" style="height: 80px; margin-bottom: 5px; object-fit: contain;">`;
-        watermarkHTML = `<img src="${info.logoUrl}" style="width: 450px; height: 450px; object-fit: contain; opacity: 0.15;">`;
+        // Ensure the logo URL is absolute so it loads correctly in the about:blank print window
+        const absoluteLogoUrl = info.logoUrl.startsWith('http') ? info.logoUrl : window.location.origin + (info.logoUrl.startsWith('/') ? '' : '/') + info.logoUrl;
+        
+        topIconHTML = `<img src="${absoluteLogoUrl}" alt="College Logo" style="height: 80px; margin-bottom: 5px; object-fit: contain;">`;
+        watermarkHTML = `<img src="${absoluteLogoUrl}" style="width: 450px; height: 450px; object-fit: contain; opacity: 0.15;">`;
     }
 
     const certHTML = `
@@ -116,7 +119,10 @@ window.handleGenerateCertificate = (e) => {
         <div style="position: relative; z-index: 1;">
             <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 5px;">
                 ${topIconHTML}
-                <h1 style="font-size: 28px; font-weight: bold; color: #1e3a8a; margin: 0; text-align: center;">NARAYANI SCIENCE HIGHER SECONDARY SCHOOL</h1>
+                <h1 style="font-size: 28px; font-weight: bold; color: #1e3a8a; margin: 0; text-align: center; line-height: 1.2;">
+                    NARAYANI SCIENCE HIGHER SECONDARY SCHOOL<br>
+                    <span style="font-size: 16px;">ATHAGADA PATNA GANJAM , PIN:- 761105</span>
+                </h1>
             </div>
             
             <p style="font-size: 16px; margin-bottom: 15px; font-weight: bold;">Academic Year: <span style="border-bottom: 1px solid #000; padding: 0 10px;">${academicYear}</span></p>
