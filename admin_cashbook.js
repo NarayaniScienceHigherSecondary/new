@@ -539,7 +539,7 @@ window.printVoucher = (id) => {
         </head>
         <body>
             <div class="header">
-                <div class="title">${college.name || 'College Name'}</div>
+                <div class="title">NARAYANI SCIENCE HIGHER SECONDARY SCHOOL<br><span style="font-size: 16px; font-weight: normal;">ATHAGADA PATNA GANJAM , PIN:- 761105</span></div>
                 <div class="subtitle">Cash Book ${t.type} Voucher</div>
             </div>
             
@@ -557,10 +557,6 @@ window.printVoucher = (id) => {
                 <div class="row">
                     <span class="label">Accounting Head:</span>
                     <span class="value">${t.head}</span>
-                </div>
-                <div class="row">
-                    <span class="label">${t.type === 'Receipt' ? 'Received From:' : 'Paid To:'}</span>
-                    <span class="value">${t.partyDetails || '-'}</span>
                 </div>
                 <div class="row">
                     <span class="label">Particulars:</span>
