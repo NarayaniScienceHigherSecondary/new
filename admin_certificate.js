@@ -154,13 +154,17 @@ window.handleGenerateCertificate = (e) => {
         </div>
     </div>
     <style>
-        @media print {
-            body, html {
-                margin: 0 !important;
-                padding: 0 !important;
-                height: 100% !important;
-                overflow: hidden !important;
-            }
+            @media print {
+                body {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+                body, html {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    height: 100% !important;
+                    overflow: hidden !important;
+                }
             body * {
                 visibility: hidden !important;
             }
@@ -207,5 +211,5 @@ window.handleGenerateCertificate = (e) => {
     setTimeout(() => {
         window.print();
         document.getElementById('print_certificate_area').classList.add('hidden');
-    }, 500);
+    }, 2000);
 };
