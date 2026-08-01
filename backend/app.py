@@ -176,8 +176,7 @@ def email_queue_processor():
             print(f"Error in email processor: {e}")
         eventlet.sleep(5) # Poll every 5 seconds
 
-# Start background thread
-eventlet.spawn(email_queue_processor)
+# Will be started on first client connect
 
 @socketio.on('enqueue_emails')
 def handle_enqueue_emails(payload):
@@ -274,8 +273,13 @@ def serve_index():
 def serve_static(path):
     return send_from_directory('../', path)
 
+processor_started = False
 @socketio.on('connect')
 def handle_connect():
+    global processor_started
+    if not processor_started:
+        socketio.start_background_task(email_queue_processor)
+        processor_started = True
     print('Client connected')
 
 @socketio.on('disconnect')
