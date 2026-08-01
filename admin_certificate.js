@@ -93,48 +93,54 @@ window.handleGenerateCertificate = (e) => {
     const placeIssue = document.getElementById('cert_place_issue').value.trim();
 
     const dateParts = dateInput.split('-');
-    const formattedDate = dateParts.length === 3 ? \`\${dateParts[2]} / \${dateParts[1]} / \${dateParts[0]}\` : dateInput;
+    const formattedDate = dateParts.length === 3 ? `${dateParts[2]} / ${dateParts[1]} / ${dateParts[0]}` : dateInput;
 
     const info = DB.getCollegeInfo();
-    const logoUrl = info.logo || 'https://via.placeholder.com/150?text=Logo';
+    
+    let topIconHTML = `<i class="fas fa-award" style="font-size: 55px; color: #1e3a8a; margin-bottom: 5px;"></i>`;
+    let watermarkHTML = `<i class="fas fa-graduation-cap"></i>`;
+    
+    if (info.logoUrl) {
+        topIconHTML = `<img src="${info.logoUrl}" alt="College Logo" style="height: 80px; margin-bottom: 5px; object-fit: contain;">`;
+        watermarkHTML = `<img src="${info.logoUrl}" style="width: 450px; height: 450px; object-fit: contain; opacity: 0.15;">`;
+    }
 
-    const certHTML = \`
-    <div class="certificate-container" style="padding: 50px; border: 20px solid #1e3a8a; background: #fff; max-width: 1100px; height: 750px; margin: 0 auto; position: relative; font-family: 'Times New Roman', serif; text-align: center; box-sizing: border-box; outline: 2px solid #b91c1c; outline-offset: -10px;">
+    const certHTML = `
+    <div class="certificate-container" style="padding: 25px 40px; border: 15px solid #1e3a8a; background: #fff; width: 100%; height: 100%; position: relative; font-family: 'Times New Roman', serif; text-align: center; box-sizing: border-box; outline: 2px solid #b91c1c; outline-offset: -8px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; page-break-after: avoid; page-break-before: avoid;">
         
-        <!-- Background watermark logo -->
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.05; z-index: 0; pointer-events: none;">
-            <img src="\${logoUrl}" style="width: 500px; height: 500px; object-fit: contain;">
+        <!-- Background watermark icon -->
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.03; z-index: 0; pointer-events: none; font-size: 400px; color: #1e3a8a; display: flex; justify-content: center; align-items: center;">
+            ${watermarkHTML}
         </div>
         
         <div style="position: relative; z-index: 1;">
-            <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
-                <img src="\${logoUrl}" alt="College Logo" style="height: 120px; margin-right: 30px;">
-                <h1 style="font-size: 34px; font-weight: bold; color: #1e3a8a; margin: 0;">NARAYANI SCIENCE HIGHER SECONDARY SCHOOL</h1>
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 5px;">
+                ${topIconHTML}
+                <h1 style="font-size: 28px; font-weight: bold; color: #1e3a8a; margin: 0; text-align: center;">NARAYANI SCIENCE HIGHER SECONDARY SCHOOL</h1>
             </div>
             
-            <p style="font-size: 20px; margin-bottom: 30px; font-weight: bold;">Academic Year: <span style="border-bottom: 1px solid #000; padding: 0 10px;">\${academicYear}</span></p>
+            <p style="font-size: 16px; margin-bottom: 15px; font-weight: bold;">Academic Year: <span style="border-bottom: 1px solid #000; padding: 0 10px;">${academicYear}</span></p>
             
-            <h2 style="font-size: 40px; color: #b91c1c; font-weight: bold; margin: 30px 0; letter-spacing: 2px;">CERTIFICATE OF ACHIEVEMENT</h2>
+            <h2 style="font-size: 30px; color: #b91c1c; font-weight: bold; margin: 15px 0; letter-spacing: 2px;">CERTIFICATE OF ACHIEVEMENT</h2>
             
-            <p style="font-size: 20px; line-height: 2.2; text-align: justify; margin: 0 40px;">
-                This is to certify that Mr./Ms. <strong style="border-bottom: 1px dashed #000; padding: 0 10px; font-size: 22px;">\${name}</strong>, 
-                Roll Number <strong style="border-bottom: 1px dashed #000; padding: 0 10px;">\${roll}</strong>, has demonstrated exceptional dedication, talent, and excellence by securing 
-                <strong style="border-bottom: 1px dashed #000; padding: 0 10px;">\${place}</strong> Place in the 
-                <strong style="border-bottom: 1px dashed #000; padding: 0 10px;">\${competition}</strong> conducted during the Academic Year 
-                <strong style="border-bottom: 1px dashed #000; padding: 0 10px;">\${academicYear}</strong>. This achievement reflects the student’s hard work, perseverance, discipline, and commitment to excellence. 
+            <p style="font-size: 17px; line-height: 2.0; text-align: justify; margin: 0 30px;">
+                This is to certify that Mr./Ms. <strong style="border-bottom: 1px dashed #000; padding: 0 10px; font-size: 22px;">${name}</strong>, 
+                Roll Number <strong style="border-bottom: 1px dashed #000; padding: 0 10px;">${roll}</strong>, has demonstrated exceptional dedication, talent, and excellence by securing 
+                <strong style="border-bottom: 1px dashed #000; padding: 0 10px;">${place}</strong> Place in the 
+                <strong style="border-bottom: 1px dashed #000; padding: 0 10px;">${competition}</strong> conducted during the Academic Year 
+                <strong style="border-bottom: 1px dashed #000; padding: 0 10px;">${academicYear}</strong>. This achievement reflects the student’s hard work, perseverance, discipline, and commitment to excellence. 
                 In recognition of this commendable accomplishment, Narayani Science Higher Secondary School proudly presents this Certificate of Achievement and extends heartfelt congratulations along with best wishes for continued success and excellence in all future academic, cultural, and extracurricular endeavors.
             </p>
             
-            <div style="display: flex; justify-content: space-between; margin: 50px 40px 0 40px; font-size: 18px;">
-                <p>Date of Issue: <strong>\${formattedDate}</strong></p>
-                <p>Place of Issue: <strong>\${placeIssue}</strong></p>
+            <div style="display: flex; justify-content: space-between; margin: 20px 40px 0 40px; font-size: 16px;">
+                <p>Date of Issue: <strong>${formattedDate}</strong></p>
+                <p>Place of Issue: <strong>${placeIssue}</strong></p>
             </div>
             
-            <div style="display: flex; justify-content: space-between; margin: 60px 40px 20px 40px; font-size: 18px; font-weight: bold;">
+            <div style="display: flex; justify-content: space-between; margin: 30px 40px 0px 40px; font-size: 16px; font-weight: bold;">
                 <div style="text-align: center;">
                     <div style="border-bottom: 2px solid #000; width: 250px; margin-bottom: 10px;"></div>
                     <p style="margin: 0;">Principal</p>
-                    <p style="margin: 0; font-size: 14px; font-weight: normal;">(Signature & School Seal)</p>
                 </div>
                 <div style="text-align: center;">
                     <div style="border-bottom: 2px solid #000; width: 250px; margin-bottom: 10px;"></div>
@@ -145,6 +151,12 @@ window.handleGenerateCertificate = (e) => {
     </div>
     <style>
         @media print {
+            body, html {
+                margin: 0 !important;
+                padding: 0 !important;
+                height: 100% !important;
+                overflow: hidden !important;
+            }
             body * {
                 visibility: hidden !important;
             }
@@ -152,25 +164,30 @@ window.handleGenerateCertificate = (e) => {
                 visibility: visible !important;
             }
             #print_certificate_area {
-                display: flex !important;
+                display: block !important;
                 position: absolute;
                 left: 0;
                 top: 0;
                 width: 100%;
-                height: 100vh;
-                align-items: center;
-                justify-content: center;
+                height: 100%;
                 margin: 0;
                 padding: 0;
                 background: white;
+                overflow: hidden;
             }
             .certificate-container {
                 width: 297mm !important;
-                height: 210mm !important;
-                max-width: none !important;
-                border: 25px solid #1e3a8a !important;
+                height: 209mm !important;
+                max-width: 297mm !important;
+                max-height: 209mm !important;
+                border: 15px solid #1e3a8a !important;
                 outline: 2px solid #b91c1c !important;
-                outline-offset: -12px !important;
+                outline-offset: -8px !important;
+                padding: 25px 40px !important;
+                box-sizing: border-box !important;
+                page-break-after: avoid !important;
+                page-break-before: avoid !important;
+                overflow: hidden !important;
             }
             @page {
                 size: A4 landscape;
@@ -178,7 +195,7 @@ window.handleGenerateCertificate = (e) => {
             }
         }
     </style>
-    \`;
+    `;
     
     document.getElementById('print_certificate_area').innerHTML = certHTML;
     document.getElementById('print_certificate_area').classList.remove('hidden');
