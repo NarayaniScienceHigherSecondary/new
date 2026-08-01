@@ -115,101 +115,11 @@ def delete_image(file_id):
 ARRAY_KEYS = [
     'users', 'students', 'staff', 'notices', 'holidays', 
     'attendance', 'exams', 'classTests', 'dcrSettings', 
-    'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery',
-    'emailTemplates', 'emailHistory'
+    'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery'
 ]
-OBJECT_KEYS = ['collegeInfo', 'cashBookSettings', 'emailAnalytics', 'pendingResets']
+OBJECT_KEYS = ['collegeInfo', 'cashBookSettings', 'pendingResets']
 
-# ---- EMAIL NOTIFICATION SYSTEM ----
-GMAIL_USER = os.environ.get('GMAIL_USER')
-GMAIL_APP_PASSWORD = os.environ.get('GMAIL_APP_PASSWORD')
 
-def send_email_smtp(recipient, subject, html_body):
-    if not GMAIL_USER or not GMAIL_APP_PASSWORD:
-        raise Exception("GMAIL_USER or GMAIL_APP_PASSWORD is not set in environment.")
-        
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = subject
-    msg['From'] = f"Narayani Science College <{GMAIL_USER}>"
-    msg['To'] = recipient
-    
-    part = MIMEText(html_body, 'html')
-    msg.attach(part)
-    
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
-    server.sendmail(GMAIL_USER, recipient, msg.as_string())
-    server.quit()
-
-def email_queue_processor():
-    """Background thread to process pending emails."""
-    print("Email queue processor started.")
-    while True:
-        try:
-            if db is not None:
-                # Find pending emails
-                pending_emails = list(db['emailHistory'].find({'status': 'pending'}).limit(10))
-                for email_doc in pending_emails:
-                    email_id = email_doc.get('id')
-                    try:
-                        # Append tracking pixel to body
-                        host_url = os.environ.get('HOST_URL', 'http://localhost:8080')
-                        tracking_url = f"{host_url.rstrip('/')}/api/email/track/{email_id}"
-                        html_body = email_doc.get('message', '')
-                        html_body += f'<img src="{tracking_url}" width="1" height="1" style="display:none;" />'
-                        
-                        send_email_smtp(email_doc.get('recipient'), email_doc.get('subject'), html_body)
-                        
-                        db['emailHistory'].update_one(
-                            {'id': email_id},
-                            {'$set': {'status': 'sent', 'delivery_timestamp': time.time()}}
-                        )
-                    except Exception as e:
-                        retry_count = email_doc.get('retry_count', 0) + 1
-                        status = 'failed' if retry_count >= 3 else 'pending'
-                        db['emailHistory'].update_one(
-                            {'id': email_id},
-                            {'$set': {'status': status, 'retry_count': retry_count, 'error_log': str(e)}}
-                        )
-                    eventlet.sleep(1) # Rate limit: 1 email per second to avoid spam triggers
-        except Exception as e:
-            print(f"Error in email processor: {e}")
-        eventlet.sleep(5) # Poll every 5 seconds
-
-# Start background thread
-eventlet.spawn(email_queue_processor)
-
-@socketio.on('enqueue_emails')
-def handle_enqueue_emails(payload):
-    """
-    Payload should be a list of email dicts:
-    [{'id': '...', 'recipient': '...', 'subject': '...', 'message': '...', 'status': 'pending', 'timestamp': ...}]
-    """
-    if db is not None:
-        try:
-            if isinstance(payload, list) and len(payload) > 0:
-                db['emailHistory'].insert_many(payload)
-                # Remove ObjectId before emitting
-                for item in payload:
-                    if '_id' in item:
-                        del item['_id']
-                # Broadcast new emails to clients so their UI updates
-                emit('emails_enqueued', payload, broadcast=True)
-        except Exception as e:
-            print(f"Error enqueueing emails: {e}")
-
-@app.route('/api/email/track/<msg_id>', methods=['GET'])
-def track_email_open(msg_id):
-    if db is not None:
-        db['emailHistory'].update_one(
-            {'id': msg_id, 'status': 'sent'},
-            {'$set': {'status': 'opened', 'opened_timestamp': time.time()}}
-        )
-    # Return 1x1 transparent GIF
-    pixel = b'GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\x00\x00\x00!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;'
-    return Response(pixel, mimetype='image/gif')
-# -----------------------------------
 
 
 @app.route('/api/login', methods=['POST'])

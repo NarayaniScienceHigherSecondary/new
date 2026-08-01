@@ -298,7 +298,6 @@ window.handleResetCashbook = () => {
     if (confirm("Are you sure you want to completely clear the entire Cash Book ledger? A 30-minute countdown will begin.")) {
         DB.requestReset('cashbook');
         showToast("Cash Book Reset Scheduled in 30 minutes.", true);
-        window.sendResetNotificationEmail('Cash Book');
         navigate('admin_cashbook');
     }
 };

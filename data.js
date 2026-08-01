@@ -113,16 +113,6 @@ socket.on('force_logout_user', (userId) => {
     }
 });
 
-socket.on('emails_enqueued', (newEmails) => {
-    if (newEmails && newEmails.length) {
-        const currentHistory = window._state['emailHistory'] || [];
-        window._state['emailHistory'] = [...currentHistory, ...newEmails];
-        if (window.currentAdminView === 'emailHistory' && window.renderAdminEmailHistory) {
-            document.getElementById('admin-content').innerHTML = window.renderAdminEmailHistory();
-        }
-    }
-});
-
 // Helper functions for DB access
 const DB = {
     get: (key) => window._state[key],

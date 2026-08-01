@@ -328,15 +328,6 @@ function navigate(viewName, params = {}) {
         case 'admin':
             setAppContent(renderAdminLayout(renderAdminDashboard()));
             break;
-        case 'admin_email':
-            setAppContent(renderAdminLayout(window.renderAdminEmailCenter ? window.renderAdminEmailCenter() : ''));
-            break;
-        case 'admin_emailHistory':
-            setAppContent(renderAdminLayout(window.renderAdminEmailHistory ? window.renderAdminEmailHistory() : ''));
-            break;
-        case 'admin_emailTemplates':
-            setAppContent(renderAdminLayout(window.renderAdminEmailTemplates ? window.renderAdminEmailTemplates() : ''));
-            break;
         case 'admin_students':
             setAppContent(renderAdminLayout(renderAdminStudents()));
             break;
@@ -881,45 +872,4 @@ setInterval(() => {
     }
 }, 1000);
 
-window.sendResetNotificationEmail = (moduleName) => {
-    const staff = DB.getStaff() || [];
-    const collegeInfo = DB.getCollegeInfo();
-    const payload = [];
-    
-    staff.forEach(s => {
-        if (s.email) {
-            const message = `
-                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
-                    <div style="background-color: #ef4444; color: white; padding: 20px; text-align: center;">
-                        <h2 style="margin: 0; font-size: 24px;">Security Alert: Data Reset Initiated</h2>
-                    </div>
-                    <div style="padding: 20px; color: #374151; line-height: 1.6;">
-                        <p>Dear ${s.name},</p>
-                        <p>Please be informed that a data reset has been initiated by the Administrator for the <strong>${moduleName}</strong> module.</p>
-                        <p>A 30-minute cancellation window is currently active. If this action is not cancelled, all data in this module will be permanently erased.</p>
-                        <p>Time Initiated: ${new Date().toLocaleString('en-GB')}</p>
-                    </div>
-                    <div style="background-color: #f3f4f6; padding: 15px; text-align: center; color: #6b7280; font-size: 12px;">
-                        This is an automated notification from ${collegeInfo.name || 'Narayani Science Higher Secondary School'}.
-                    </div>
-                </div>
-            `;
-            
-            payload.push({
-                id: 'MSG_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-                recipient: s.email,
-                recipientName: s.name,
-                subject: `Security Alert: ${moduleName} Data Reset Initiated`,
-                message: message,
-                status: 'pending',
-                timestamp: new Date().toISOString(),
-                retry_count: 0
-            });
-        }
-    });
 
-    if (payload.length > 0 && window.socket && window.socket.connected) {
-        window.socket.emit('enqueue_emails', payload);
-        console.log(`Reset notification sent to ${payload.length} staff members.`);
-    }
-};

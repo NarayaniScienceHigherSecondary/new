@@ -559,7 +559,6 @@ window.handleResetDcrRecordsConfirm = () => {
     DB.requestReset('dcr');
     document.getElementById('dcr_reset_modal').classList.add('hidden');
     showToast("DCR Reset Scheduled in 30 minutes.", true);
-    window.sendResetNotificationEmail('Daily Collection Register (DCR)');
     navigate('admin_dcr');
 };
 

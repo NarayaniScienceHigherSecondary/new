@@ -91,9 +91,6 @@ function renderAdminLayout(content) {
                     <a href="#" onclick="navigate('admin_settings')" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-blue-50 hover:text-primary dark:hover:bg-gray-700 transition-colors ${window.currentAdminView === 'settings' ? 'bg-blue-50 text-primary dark:bg-gray-700' : 'text-gray-600 dark:text-gray-300'}">
                         <i class="fas fa-cog w-6"></i> Settings
                     </a>
-                    <button onclick="navigate('admin_email')" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-blue-50 hover:text-primary dark:hover:bg-gray-700 transition-colors ${['email', 'emailHistory', 'emailTemplates'].includes(window.currentAdminView) ? 'bg-blue-50 text-primary dark:bg-gray-700' : 'text-gray-600 dark:text-gray-300'}">
-                        <i class="fas fa-paper-plane w-6 text-blue-500"></i> Email Center
-                    </button>
                 </nav>
                 
                 <div class="mt-8 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
