@@ -393,6 +393,10 @@ function navigate(viewName, params = {}) {
             content = renderAdminScholarships();
             setAppContent(renderAdminLayout(content));
             break;
+        case 'admin_certificate':
+            content = window.renderAdminCertificate ? window.renderAdminCertificate() : '';
+            setAppContent(renderAdminLayout(content));
+            break;
         case 'student':
             setAppContent(renderStudentDashboard());
             break;

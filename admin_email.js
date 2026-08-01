@@ -222,22 +222,22 @@ window.handleSendEmail = (e) => {
     
     if (audience === 'all' || audience === 'students') {
         students.forEach(s => {
-            if (s.email) recipients.push({ email: s.email, name: s.name, id: s.id, year: s.year, role: 'student' });
+            if (s.email && s.email.trim() !== '') recipients.push({ email: s.email, name: s.name, id: s.id, year: s.year, role: 'student' });
         });
     }
     if (audience === 'plus2_1st') {
         students.filter(s => (s.year || '').trim() === '+2 1st year').forEach(s => {
-            if (s.email) recipients.push({ email: s.email, name: s.name, id: s.id, year: s.year, role: 'student' });
+            if (s.email && s.email.trim() !== '') recipients.push({ email: s.email, name: s.name, id: s.id, year: s.year, role: 'student' });
         });
     }
     if (audience === 'plus2_2nd') {
         students.filter(s => (s.year || '').trim() === '+2 2nd year').forEach(s => {
-            if (s.email) recipients.push({ email: s.email, name: s.name, id: s.id, year: s.year, role: 'student' });
+            if (s.email && s.email.trim() !== '') recipients.push({ email: s.email, name: s.name, id: s.id, year: s.year, role: 'student' });
         });
     }
     if (audience === 'all' || audience === 'staff') {
         staff.forEach(s => {
-            if (s.email) recipients.push({ email: s.email, name: s.name, id: s.id, role: 'staff' });
+            if (s.email && s.email.trim() !== '') recipients.push({ email: s.email, name: s.name, id: s.id, role: 'staff' });
         });
     }
     if (audience === 'specific') {

@@ -79,8 +79,11 @@ function renderAdminLayout(content) {
                     <button onclick="navigate('admin_credentials')" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-blue-50 hover:text-primary dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300">
                         <i class="fas fa-key w-6"></i> Credentials
                     </button>
+                    <button onclick="navigate('admin_certificate')" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-blue-50 hover:text-primary dark:hover:bg-gray-700 transition-colors ${window.currentAdminView === 'certificate' ? 'bg-blue-50 text-primary dark:bg-gray-700' : 'text-gray-600 dark:text-gray-300'}">
+                        <i class="fas fa-award w-6"></i> Achievement Certificate
+                    </button>
                     <a href="#" onclick="navigate('admin_scholarships')" class="flex items-center px-4 py-2.5 rounded-lg hover:bg-blue-50 hover:text-primary dark:hover:bg-gray-700 transition-colors ${window.currentAdminView === 'scholarships' ? 'bg-blue-50 text-primary dark:bg-gray-700' : 'text-gray-600 dark:text-gray-300'}">
-                        <i class="fas fa-award w-6"></i> Scholarships
+                        <i class="fas fa-graduation-cap w-6"></i> Scholarships
                     </a>
                     <button onclick="navigate('admin_reports')" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-blue-50 hover:text-primary dark:hover:bg-gray-700 transition-colors ${window.currentAdminView === 'reports' ? 'bg-blue-50 text-primary dark:bg-gray-700' : 'text-gray-600 dark:text-gray-300'}">
                         <i class="fas fa-exclamation-triangle w-6 text-red-500"></i> Reports & Anomalies
@@ -597,18 +600,13 @@ window.handleEditStudent = function(e) {
     });
     
     if(student) {
-        let emailChanged = false;
-        if(student.email !== email && email) {
-            emailChanged = true;
-        }
-
-        if(student.rollNo !== rollNo || emailChanged) {
+        if(student.rollNo !== rollNo || student.email !== email || student.name !== name) {
             let users = DB.get('users') || [];
-            let user = users.find(u => u._id === student._id || (u.id === student.rollNo && u.role === 'student'));
+            let user = users.find(u => u._id === student._id || (u.id === student.rollNo && u.role === 'student' && (u.year || '') === (student.year || '')));
             if(user) {
                 user.id = rollNo;
                 user.name = name;
-                if(emailChanged) user.email = email;
+                user.email = email;
                 DB.set('users', users);
             }
         }
