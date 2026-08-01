@@ -136,7 +136,8 @@ def send_email_smtp(recipient, subject, html_body):
     part = MIMEText(html_body, 'html')
     msg.attach(part)
     
-    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
     server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
     server.sendmail(GMAIL_USER, recipient, msg.as_string())
     server.quit()
@@ -176,7 +177,8 @@ def email_queue_processor():
             print(f"Error in email processor: {e}")
         eventlet.sleep(5) # Poll every 5 seconds
 
-# Will be started on first client connect
+# Start background thread
+eventlet.spawn(email_queue_processor)
 
 @socketio.on('enqueue_emails')
 def handle_enqueue_emails(payload):
@@ -273,13 +275,8 @@ def serve_index():
 def serve_static(path):
     return send_from_directory('../', path)
 
-processor_started = False
 @socketio.on('connect')
 def handle_connect():
-    global processor_started
-    if not processor_started:
-        socketio.start_background_task(email_queue_processor)
-        processor_started = True
     print('Client connected')
 
 @socketio.on('disconnect')
