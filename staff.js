@@ -16,16 +16,28 @@ function renderStaffDashboard() {
 
     if (!staff) return `<div class="p-8 text-center text-red-500">Staff Profile Not Found</div>`;
 
+    const isPeon = staff && ((staff.post && staff.post.toLowerCase().includes('peon')) || (staff.designation && staff.designation.toLowerCase().includes('peon')));
+    
     return `
-    <div class="max-w-7xl mx-auto px-4 py-8 w-full animate-fade-in">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Welcome, ${staff.name}</h2>
-            <div class="flex space-x-3">
-                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-primary transition-colors"><i class="fas fa-moon"></i></button>
-                <button onclick="logout()" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm shadow-sm transition-colors flex items-center"><i class="fas fa-sign-out-alt mr-2"></i>Logout</button>
+    <div class="max-w-7xl mx-auto px-4 py-8 w-full animate-fade-in font-sans">
+        
+        <!-- Welcome Hero Banner -->
+        <div class="w-full rounded-3xl mb-8 p-8 md:p-12 relative overflow-hidden shadow-2xl bg-gradient-to-br from-indigo-900 via-primary to-purple-900 text-white flex flex-col md:flex-row items-center justify-between group">
+            <div class="absolute inset-0 bg-black opacity-10"></div>
+            <div class="absolute -top-24 -right-24 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
+            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
+            
+            <div class="relative z-10 text-center md:text-left mb-6 md:mb-0">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-2 tracking-tight">Welcome, <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">${(staff.name || 'Staff').split(' ')[0]}</span>!</h1>
+                <p class="text-indigo-200 text-lg">${staff.designation ? staff.designation : staff.type + ' Staff'} - ID: ${staff.id}</p>
+            </div>
+            
+            <div class="relative z-10 flex space-x-3 mt-4 md:mt-0">
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur shadow-sm border border-white/30 flex items-center justify-center text-white transition-colors" title="Toggle Theme"><i class="fas fa-moon"></i></button>
+                <button onclick="logout()" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm shadow-sm transition-colors flex items-center border border-red-400"><i class="fas fa-sign-out-alt mr-2"></i>Logout</button>
             </div>
         </div>
-        
+
         <!-- Mobile Header with Hamburger -->
         <div class="lg:hidden flex items-center justify-between bg-white/80 dark:bg-gray-800/80 backdrop-blur-md p-4 rounded-2xl shadow-sm mb-6 border border-gray-100 dark:border-gray-700">
             <div class="font-bold text-lg text-gray-800 dark:text-white flex items-center"><i class="fas fa-chalkboard-teacher text-primary mr-2 text-xl"></i>My Profile & Actions</div>
@@ -34,15 +46,55 @@ function renderStaffDashboard() {
             </button>
         </div>
 
+        <!-- Quick Actions Panel -->
+        <div class="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <button onclick="document.getElementById('editProfileModal').classList.remove('hidden')" class="glass-card p-6 flex flex-col items-center justify-center hover:scale-105 hover:shadow-xl transition-all duration-300 border border-blue-500/30">
+                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mb-3">
+                    <i class="fas fa-user-edit text-xl"></i>
+                </div>
+                <span class="font-bold text-gray-800 dark:text-white">Edit Profile</span>
+            </button>
+            
+            ${!isPeon ? `
+            <button onclick="openAttendanceModal()" class="glass-card p-6 flex flex-col items-center justify-center hover:scale-105 hover:shadow-xl transition-all duration-300 border border-emerald-500/30">
+                <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mb-3">
+                    <i class="fas fa-clipboard-check text-xl"></i>
+                </div>
+                <span class="font-bold text-gray-800 dark:text-white">Mark Attendance</span>
+            </button>
+            
+            <button onclick="document.getElementById('staffNoticeModal').classList.remove('hidden')" class="glass-card p-6 flex flex-col items-center justify-center hover:scale-105 hover:shadow-xl transition-all duration-300 border border-purple-500/30">
+                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 rounded-full flex items-center justify-center mb-3">
+                    <i class="fas fa-bullhorn text-xl"></i>
+                </div>
+                <span class="font-bold text-gray-800 dark:text-white">Publish Notice</span>
+            </button>
+            ` : `
+            <div class="glass-card p-6 flex flex-col items-center justify-center opacity-50 cursor-not-allowed border border-gray-300/30">
+                <div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 text-gray-400 rounded-full flex items-center justify-center mb-3">
+                    <i class="fas fa-lock text-xl"></i>
+                </div>
+                <span class="font-bold text-gray-500 dark:text-gray-400">Attendance (Locked)</span>
+            </div>
+            
+            <div class="glass-card p-6 flex flex-col items-center justify-center opacity-50 cursor-not-allowed border border-gray-300/30">
+                <div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 text-gray-400 rounded-full flex items-center justify-center mb-3">
+                    <i class="fas fa-lock text-xl"></i>
+                </div>
+                <span class="font-bold text-gray-500 dark:text-gray-400">Notice (Locked)</span>
+            </div>
+            `}
+        </div>
+
         <div class="flex flex-col lg:flex-row gap-8 relative">
             <!-- Sidebar Overlay -->
             <div id="staff-sidebar-overlay" onclick="toggleStaffSidebar()" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden lg:hidden"></div>
 
-            <!-- Left Column -->
+            <!-- Left Column (Profile Summary) -->
             <div id="staff-sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out w-80 lg:w-1/3 bg-white/95 dark:bg-gray-900/95 lg:bg-transparent lg:dark:bg-transparent z-50 overflow-y-auto p-6 lg:p-0 h-screen lg:h-auto border-r border-gray-200 dark:border-gray-700 lg:border-none shadow-2xl lg:shadow-none flex flex-col gap-6 custom-scrollbar">
                 
                 <div class="lg:hidden flex justify-between items-center mb-2">
-                    <span class="font-bold text-gray-800 dark:text-white text-lg">Profile</span>
+                    <span class="font-bold text-gray-800 dark:text-white text-lg">Menu</span>
                     <button onclick="toggleStaffSidebar()" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white focus:outline-none">
                         <i class="fas fa-times text-2xl"></i>
                     </button>
@@ -57,24 +109,6 @@ function renderStaffDashboard() {
                     <p class="text-sm text-gray-500 mb-2">${staff.designation ? staff.designation + ' (' + staff.type + ')' : staff.type + ' Staff'}</p>
                     <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">ID: ${staff.id}</span>
                 </div>
-
-                ${isTeaching ? `
-                <!-- Teacher specific actions -->
-                <div class="glass-card p-6 shadow-xl border border-white/40 dark:border-gray-700/50 backdrop-blur-xl">
-                    <h4 class="font-bold mb-4 text-gray-800 dark:text-white">Quick Actions</h4>
-                    <div class="space-y-3">
-                        <button onclick="openAttendanceModal()" class="w-full py-2 bg-primary text-white rounded-lg shadow hover:bg-blue-800 transition flex items-center justify-center">
-                            <i class="fas fa-clipboard-list mr-2"></i> Mark Attendance
-                        </button>
-                        <button onclick="document.getElementById('staffNoticeModal').classList.remove('hidden')" class="w-full py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition flex items-center justify-center">
-                            <i class="fas fa-bullhorn mr-2"></i> Publish Notice
-                        </button>
-                        <button onclick="navigate('staff_tests')" class="w-full py-2 bg-emerald-600 text-white rounded-lg shadow hover:bg-emerald-700 transition flex items-center justify-center">
-                            <i class="fas fa-file-alt mr-2"></i> Manage Class Tests
-                        </button>
-                    </div>
-                </div>
-                ` : ''}
             </div>
 
             <!-- Right Column -->
