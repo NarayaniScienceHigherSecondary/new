@@ -1,0 +1,249 @@
+/Users/arnnavpanda/Desktop/college mamangemt/venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+Connected to MongoDB successfully!
+Starting Flask-SocketIO Server on port 8080...
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client disconnected
+Client disconnected
+Client connected
+Client connected
+Client connected
+Received get_full_state request...
+Received get_full_state request...
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client disconnected
+Client disconnected
+Client connected
+Received get_full_state request...
+Client connected
+Client connected
+Received get_full_state request...
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client disconnected
+Client disconnected
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client connected
+Received get_full_state request...
+Client disconnected
+Client connected
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Client disconnected
+Client disconnected
+Client disconnected
+Client connected
+Client connected
+Client connected
+Received get_full_state request...
+Received get_full_state request...
+Received get_full_state request...
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: dict_keys(['users', 'students', 'staff', 'notices', 'holidays', 'attendance', 'exams', 'classTests', 'dcrSettings', 'dcrRecords', 'cashBookTransactions', 'scholarships', 'gallery', 'libraryCards', 'libraryBooks', 'libraryFines', 'collegeInfo', 'cashBookSettings', 'pendingResets'])
+Sending full_state_response with keys: 

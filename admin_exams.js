@@ -481,6 +481,7 @@ window.generateTimetable = (e) => {
         id: 'N' + Date.now(),
         title: `${year} - ${type} Timetable`,
         date: new Date().toISOString().split('T')[0],
+        createdAt: new Date().toISOString(),
         content: tableHtml,
         target: year === 'All Years' ? 'All' : year
     };

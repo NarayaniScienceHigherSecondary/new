@@ -10,17 +10,71 @@ window.toggleStudentSidebar = () => {
 };
 
 function renderStudentDashboard() {
-    const student = DB.getStudents().find(s => {
-        if (currentUser._id) return s._id === currentUser._id;
-        return !s._id && (s.id === currentUser.id || s.rollNo === currentUser.id) && (s.year || '') === (currentUser.year || '');
+    try {
+        const student = DB.getStudents().find(s => {
+        if (currentUser.id && s._id) return String(s._id) === String(currentUser.id);
+        if (currentUser._id && s._id) return String(s._id) === String(currentUser._id);
+        return (String(s.id) === String(currentUser.id) || String(s.rollNo) === String(currentUser.id)) && (s.year || '') === (currentUser.year || '');
     });
+    
+    if (!student) {
+        return `<div class="p-8 text-center text-red-500"><h2 class="text-2xl font-bold">Error</h2><p>Student profile not found. Please contact administration.</p></div>`;
+    }
+
+    // Calculate dynamic profile completion percentage
+    let completedFields = 0;
+    const fieldsToCheck = [
+        'dob', 'gender', 'optionalSubject1', 'optionalSubject2', 
+        'fatherName', 'motherName', 'mobileNo', 'email', 'address'
+    ];
+    fieldsToCheck.forEach(field => {
+        if (student[field] && String(student[field]).trim() !== '') {
+            completedFields++;
+        }
+    });
+
+    let profilePct = 30; // base from admin
+    if (completedFields === fieldsToCheck.length) {
+        profilePct = 100;
+    } else if (completedFields > 0) {
+        profilePct = 30 + Math.floor((completedFields / fieldsToCheck.length) * 65); // scales up to ~95%
+        // User requested exactly 99% if these specific fields are filled
+        if (student.dob && student.optionalSubject1 && student.optionalSubject2 && student.fatherName && student.motherName) {
+            profilePct = 99;
+        }
+    }
+
     const notices = DB.getNotices();
     const holidays = DB.getHolidays();
     const attendance = DB.getAttendance();
-    const publishedExams = DB.getExams().filter(e => e.isPublished && e.results[student?.rollNo] && (!e.targetYear || e.targetYear === student?.year));
+    const publishedExams = DB.getExams().filter(e => e.isPublished && e.results && e.results[student?.rollNo] && (!e.targetYear || e.targetYear === student?.year));
     const publishedClassTests = DB.getClassTests().filter(t => t.isPublished && (!t.targetYear || t.targetYear === student?.year));
     const scholarships = DB.getScholarships();
     const info = DB.getCollegeInfo();
+    let allStudentCards = (DB && typeof DB.getLibraryCards === 'function' && student) 
+        ? DB.getLibraryCards().filter(c => String(c.rollNo) === String(student.rollNo) && String(c.year) === String(student.year)) 
+        : [];
+        
+
+
+    // Find the student's active or suspended library card
+    let libraryCard = allStudentCards.find(c => c.status !== 'Deleted');
+    
+    const issuedBooks = (DB && typeof DB.getLibraryBooks === 'function' && student) ? DB.getLibraryBooks().filter(b => 
+        String(b.studentYear) === String(student.year) && (
+            (libraryCard && b.cardNumber === libraryCard.cardNumber) || 
+            (b.studentRoll && String(b.studentRoll) === String(student.rollNo))
+        )
+    ) : [];
+    
+    const libraryFines = (DB && typeof DB.getLibraryFines === 'function' && student) ? DB.getLibraryFines().filter(f => 
+        String(f.studentYear) === String(student.year) && (
+            (libraryCard && f.cardNumber === libraryCard.cardNumber) || 
+            (f.studentRoll && String(f.studentRoll) === String(student.rollNo))
+        )
+    ) : [];
+
+
 
     if (!student) return `<div class="p-8 text-center text-red-500 font-bold text-xl">Student Profile Not Found</div>`;
 
@@ -32,9 +86,9 @@ function renderStudentDashboard() {
     
     attendance.forEach(att => {
         if (!att.targetYear || att.targetYear === student?.year) {
-            if (att.records[student.rollNo]) {
+            if (att.records && att.records[student.rollNo]) {
                 totalClasses++;
-                const status = att.records[student.rollNo];
+                const status = att.records && att.records[student.rollNo];
                 if (status === 'Present') presentClasses++;
                 studentAttendanceRecords.push({ date: att.date, status });
             }
@@ -56,7 +110,7 @@ function renderStudentDashboard() {
             <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
             
             <div class="relative z-10 text-center md:text-left mb-6 md:mb-0">
-                <h1 class="text-4xl md:text-5xl font-extrabold mb-2 tracking-tight">Welcome back, <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">${student.name.split(' ')[0]}</span>!</h1>
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-2 tracking-tight">Welcome back, <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">${(student.name || 'Student').split(' ')[0]}</span>!</h1>
                 <p class="text-indigo-200 text-lg">Here's your academic overview for today.</p>
             </div>
             
@@ -111,17 +165,18 @@ function renderStudentDashboard() {
                         </div>
                     </div>
                     
-                    <h2 class="relative text-2xl font-bold text-gray-800 dark:text-white tracking-wide">${student.name}</h2>
+                    <h2 class="relative text-2xl font-bold text-gray-800 dark:text-white tracking-wide">${student.name || ''}</h2>
                     <p class="relative text-primary dark:text-blue-400 font-medium mb-1 uppercase tracking-widest text-sm">${student.year || '+2 1st year'}</p>
                     <p class="relative text-gray-600 dark:text-gray-300 font-medium mb-1 uppercase tracking-widest text-sm">Roll No: ${student.rollNo}</p>
+                    <p class="relative text-gray-600 dark:text-gray-300 font-medium mb-1 text-sm tracking-wide">DOB: <span class="font-bold text-primary dark:text-blue-400">${student.dob || '-'}</span></p>
                     <p class="relative text-gray-600 dark:text-gray-300 font-medium mb-1 text-sm tracking-wide">Optionals: <span class="font-bold text-primary dark:text-blue-400">${student.optionalSubject1 || '-'}, ${student.optionalSubject2 || '-'}</span></p>
                     ${(!student.year || student.year === '+2 1st year') ? '' : 
                         (student.councilRollNo ? `<p class="relative text-gray-600 dark:text-gray-300 font-medium mb-6 uppercase tracking-wider text-xs">Council Roll: ${student.councilRollNo}</p>` : `<p class="relative text-gray-400 dark:text-gray-500 font-medium mb-6 uppercase tracking-wider text-xs italic">Council Roll: Pending</p>`)}
                     
                     <div class="relative w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-2 shadow-inner overflow-hidden mt-4">
-                        <div class="bg-gradient-to-r from-blue-400 via-primary to-purple-500 h-full rounded-full transition-all duration-1000 ease-out" style="width: ${student.profileComplete ? '100%' : '30%'}"></div>
+                        <div class="bg-gradient-to-r from-blue-400 via-primary to-purple-500 h-full rounded-full transition-all duration-1000 ease-out" style="width: ${profilePct}%"></div>
                     </div>
-                    <p class="relative text-xs text-gray-500 dark:text-gray-400 text-left font-medium">Profile Completion: ${student.profileComplete ? '100%' : '30%'}</p>
+                    <p class="relative text-xs text-gray-500 dark:text-gray-400 text-left font-medium">Profile Completion: ${profilePct}%</p>
                 </div>
             </div>
 
@@ -135,7 +190,7 @@ function renderStudentDashboard() {
                             <div class="bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
                                 <i class="fas fa-chart-pie text-3xl"></i>
                             </div>
-                            <span class="text-4xl font-black opacity-80">${totalClasses === 0 ? '-' : attendancePercentage + '%'}</span>
+                            <span class="text-3xl font-black opacity-80 whitespace-nowrap">${totalClasses === 0 ? 'No Data' : attendancePercentage + '%'}</span>
                         </div>
                         <h3 class="font-bold text-2xl tracking-tight mb-1">Attendance</h3>
                         <p class="text-blue-100 text-sm font-medium">Click to view records</p>
@@ -147,7 +202,7 @@ function renderStudentDashboard() {
                             <div class="bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
                                 <i class="fas fa-graduation-cap text-3xl"></i>
                             </div>
-                            <span class="bg-white/20 px-3 py-1 rounded-xl text-sm font-bold backdrop-blur-sm">${publishedExams.length + publishedClassTests.length} New</span>
+                            <span class="bg-white/20 px-3 py-1 rounded-xl text-sm font-bold backdrop-blur-sm whitespace-nowrap">${(publishedExams.length + publishedClassTests.length) === 0 ? 'No Data' : (publishedExams.length + publishedClassTests.length) + ' New'}</span>
                         </div>
                         <h3 class="font-bold text-2xl tracking-tight mb-1">My Results</h3>
                         <p class="text-indigo-100 text-sm font-medium">Exams & Class Tests</p>
@@ -178,6 +233,16 @@ function renderStudentDashboard() {
                         <p class="text-green-100 text-sm font-medium">Successful</p>
                     </div>
                     ` : ''}
+                    <!-- Library Card 3D Box -->
+                    <div onclick="openStudentModal('libraryCardModal')" class="relative bg-gradient-to-br from-amber-600 to-yellow-800 text-white rounded-3xl p-6 cursor-pointer transform transition-all duration-300 hover:-translate-y-2 active:translate-y-2 shadow-[0_10px_0_0_#78350f] hover:shadow-[0_15px_0_0_#78350f] active:shadow-[0_0px_0_0_#78350f]">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
+                                <i class="fas fa-id-card text-3xl"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-2xl tracking-tight mb-1">Library Card</h3>
+                        <p class="text-amber-100 text-sm font-medium">Digital ID & Books</p>
+                    </div>
 
                     <!-- Holidays 3D Box -->
                     <div onclick="openStudentModal('holidaysModal')" class="relative bg-gradient-to-br from-orange-400 to-red-600 text-white rounded-3xl p-6 cursor-pointer transform transition-all duration-300 hover:-translate-y-2 active:translate-y-2 shadow-[0_10px_0_0_#7c2d12] hover:shadow-[0_15px_0_0_#7c2d12] active:shadow-[0_0px_0_0_#7c2d12]">
@@ -216,12 +281,17 @@ function renderStudentDashboard() {
                     </div>
                     <div class="notice-scroll-container">
                         <div class="notice-scroll-content">
-                            ${notices.length ? notices.map(n => `
+                            ${notices.length ? notices.map(n => {
+                                const isNew = n.createdAt && (Date.now() - new Date(n.createdAt).getTime() <= 48 * 60 * 60 * 1000);
+                                return `
                                 <div onclick="openPublicNoticeModal('${n.id}')" class="cursor-pointer p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all flex flex-col">
-                                    <h4 class="font-bold text-gray-800 dark:text-white mb-1 group-hover:text-primary transition-colors">${n.title}</h4>
+                                    <h4 class="font-bold text-gray-800 dark:text-white mb-1 group-hover:text-primary transition-colors">
+                                        ${n.title}
+                                        ${isNew ? '<span class="bg-red-500 text-white text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ml-2 animate-pulse shadow-sm inline-block transform -translate-y-0.5">New</span>' : ''}
+                                    </h4>
                                     <span class="text-xs text-gray-500 font-medium flex items-center"><i class="far fa-calendar mr-2"></i>${n.date}</span>
                                 </div>
-                            `).join('') : '<p class="text-gray-500 italic p-4">No recent notices.</p>'}
+                            `}).join('') : '<p class="text-gray-500 italic p-4">No recent notices.</p>'}
                         </div>
                     </div>
                 </div>
@@ -285,7 +355,7 @@ function renderStudentDashboard() {
                     <h4 class="font-bold text-lg mb-4 text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 pb-2">Class Tests</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         ${publishedClassTests.length ? publishedClassTests.map(t => {
-                            const marks = t.results[student.rollNo];
+                            const marks = t.results ? t.results[student.rollNo] : undefined;
                             return `
                             <div class="p-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm flex justify-between items-center">
                                 <div>
@@ -362,7 +432,7 @@ function renderStudentDashboard() {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-sm font-medium mb-1">Name (Uneditable)</label>
-                            <input type="text" value="${student.name}" disabled class="w-full px-4 py-2 rounded-lg bg-gray-100 border text-gray-500 dark:bg-gray-900 dark:border-gray-700 cursor-not-allowed">
+                            <input type="text" value="${student.name || ''}" disabled class="w-full px-4 py-2 rounded-lg bg-gray-100 border text-gray-500 dark:bg-gray-900 dark:border-gray-700 cursor-not-allowed">
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Roll No (Uneditable)</label>
@@ -375,6 +445,10 @@ function renderStudentDashboard() {
                                 <option value="Male" ${student.gender === 'Male' ? 'selected' : ''}>Male</option>
                                 <option value="Female" ${student.gender === 'Female' ? 'selected' : ''}>Female</option>
                             </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Date of Birth</label>
+                            <input type="date" id="s_dob" value="${student.dob || ''}" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Optional Subject 1</label>
@@ -427,11 +501,11 @@ function renderStudentDashboard() {
                         ` : ''}
                         <div>
                             <label class="block text-sm font-medium mb-1">Father's Name</label>
-                            <input type="text" id="s_fname" value="${student.fatherName}" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <input type="text" id="s_fname" value="${student.fatherName || ''}" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Mother's Name</label>
-                            <input type="text" id="s_mname" value="${student.motherName}" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <input type="text" id="s_mname" value="${student.motherName || ''}" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Mobile Number</label>
@@ -443,7 +517,7 @@ function renderStudentDashboard() {
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium mb-1">Address</label>
-                            <textarea id="s_address" rows="2" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white">${student.address}</textarea>
+                            <textarea id="s_address" rows="2" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white">${student.address || ''}</textarea>
                         </div>
                     </div>
                     <div class="mt-6 flex justify-end space-x-3">
@@ -453,8 +527,114 @@ function renderStudentDashboard() {
                 </form>
             </div>
         </div>
+        
+        <!-- Library Card Modal -->
+        <div id="libraryCardModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center animate-fade-in p-4 perspective-1000">
+            <div class="relative w-full max-w-sm h-96">
+                <button onclick="closeStudentModal('libraryCardModal')" class="absolute -top-12 right-0 text-white hover:text-gray-300 z-50"><i class="fas fa-times text-2xl"></i></button>
+                ${!libraryCard ? `
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-2xl text-center">
+                    <i class="fas fa-id-card text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-4 dark:text-white">Library Card Unavailable</h3>
+                    ${student.libraryCardRevoked ? `
+                        <p class="text-red-500 font-medium mb-4">Your library card was permanently deleted by the librarian.</p>
+                    ` : `
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">Your library card has not been generated by the Librarian yet.</p>
+                        <button onclick="document.getElementById('libraryCardModal').classList.add('hidden'); document.getElementById('editProfileModal').classList.remove('hidden');" class="bg-primary text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition">Complete Profile</button>
+                    `}
+                </div>
+                ` : `
+                <!-- Multi-page 3D Leather Card -->
+                <div class="book-wrapper" id="libBookWrapper">
+                    
+                    <!-- Page 1 (Cover) -->
+                    <div class="book-page page-1" onclick="flipLibPage(this)">
+                        <div class="book-front book-leather flex flex-col items-center justify-center p-4">
+                            <img src="${info.logoUrl}" class="w-20 h-20 mb-2 rounded-full border-2 border-yellow-600" alt="Logo" onerror="this.style.display='none'">
+                            <h3 class="text-center text-white font-bold text-sm mb-1 shadow-text leading-tight">Narayani Science Higher Secondary School</h3>
+                            <p class="text-center text-gray-200 font-medium text-[9px] mb-2 shadow-text tracking-wide uppercase">ATHAGADA PATNA GANJAM</p>
+                            <div class="w-full border-t border-yellow-600/50 my-2"></div>
+                            <p class="text-yellow-400 font-bold uppercase tracking-widest text-sm shadow-text">Library Card</p>
+                        </div>
+                        <div class="book-back book-paper-back p-4 flex flex-col justify-center relative">
+                            <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: url('${info.logoUrl}'); background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+                            
+                            ${libraryCard.status === 'Suspended' ? `
+                                <div class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                                    <div class="transform -rotate-45 border-4 border-red-600 text-red-600 font-bold text-4xl py-2 px-6 rounded opacity-80 uppercase tracking-widest shadow-sm">
+                                        Suspended
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            <div class="border-4 border-amber-900/30 p-2 h-full flex flex-col justify-center text-amber-950 text-center relative">
+                                <i class="fas fa-user-graduate text-5xl mb-3 text-amber-800"></i>
+                                <h2 class="font-bold text-xl uppercase">${libraryCard.studentName}</h2>
+                                <p class="text-sm font-bold border-b border-amber-800/50 pb-1 mb-2 mt-2">Card No: <span class="text-primary">${libraryCard.cardNumber}</span></p>
+                                <p class="text-sm font-medium">Roll: ${libraryCard.rollNo}</p>
+                                <p class="text-sm font-medium">Year: ${libraryCard.year}</p>
+                                <p class="text-xs font-medium mt-4 text-amber-700">Issued On: ${libraryCard.issueDate}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page 2 (Issued Books & Fines) -->
+                    <div class="book-page page-2" onclick="flipLibPage(this)">
+                        <div class="book-front book-paper p-4 flex flex-col relative">
+                            <h4 class="font-bold text-amber-900 border-b border-amber-800 mb-2 pb-1 text-sm text-center uppercase tracking-widest">Issued Books</h4>
+                            <div class="space-y-2 overflow-y-auto flex-1 custom-scrollbar pr-1" onclick="event.stopPropagation()">
+                                ${issuedBooks.length > 0 ? issuedBooks.map(b => `
+                                    <div class="bg-white/60 p-2 rounded border border-amber-300 shadow-sm text-xs text-amber-950">
+                                        <p class="font-bold truncate" title="${b.bookName}">${b.bookName}</p>
+                                        <div class="flex justify-between items-center mt-1">
+                                            <p class="text-[10px] font-medium text-amber-700">Due: ${b.returnDate}</p>
+                                            <span class="${b.status === 'Issued' ? 'text-red-600 bg-red-100' : 'text-green-600 bg-green-100'} font-bold px-1.5 py-0.5 rounded text-[9px] uppercase">${b.status}</span>
+                                        </div>
+                                    </div>
+                                `).join('') : '<div class="h-full flex items-center justify-center"><p class="text-sm font-medium italic text-amber-700/60">No books currently issued.</p></div>'}
+                            </div>
+                        </div>
+                        <div class="book-back book-paper-back p-4 flex flex-col">
+                            <h4 class="font-bold text-red-900 border-b border-red-800/30 mb-2 pb-1 text-sm text-center uppercase tracking-widest">Fine Receipts</h4>
+                            <div class="space-y-2 overflow-y-auto flex-1 custom-scrollbar pr-1 mb-2" onclick="event.stopPropagation()">
+                                ${libraryFines.length > 0 ? libraryFines.map(f => `
+                                    <div class="bg-red-50/80 p-2 rounded border border-red-200 shadow-sm text-xs text-red-950 relative overflow-hidden">
+                                        <div class="absolute right-0 top-0 bottom-0 w-8 flex items-center justify-center bg-red-100 opacity-50"><span class="-rotate-90 text-[8px] font-bold tracking-widest uppercase">Fine</span></div>
+                                        <p class="font-bold truncate pr-6" title="${f.bookName}">${f.bookName}</p>
+                                        <p class="text-[9px] text-red-700 italic pr-6">${f.reason}</p>
+                                        <div class="flex justify-between items-center mt-2 pr-6">
+                                            <p class="text-[10px] font-medium text-red-800">${f.date}</p>
+                                            <span class="text-red-700 font-bold text-sm">Rs ${f.amount}</span>
+                                        </div>
+                                    </div>
+                                `).join('') : '<div class="h-full flex items-center justify-center"><p class="text-sm font-medium italic text-amber-700/60">No fines recorded.</p></div>'}
+                            </div>
+                            
+                            <div class="mt-auto pt-2 border-t border-amber-900/20 flex flex-col items-center justify-center">
+                                <img src="${info.logoUrl}" class="w-10 h-10 mb-1 rounded-full border border-yellow-600/50 shadow-sm opacity-60 grayscale" alt="Logo" onerror="this.style.display='none'">
+                                <p class="text-[9px] text-amber-900/40 uppercase tracking-widest font-bold">End of Card</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                `}
+            </div>
+        </div>
     </div>
     `;
+    } catch (e) {
+        console.error("Student Dashboard Render Error:", e);
+        return `<div class="p-8 text-center text-red-500 font-sans mt-20">
+            <h2 class="text-3xl font-bold mb-4"><i class="fas fa-exclamation-triangle text-red-600 mr-2"></i>Dashboard Error</h2>
+            <p class="text-lg text-gray-700 dark:text-gray-300">An error occurred while loading your profile.</p>
+            <div class="mt-6 p-4 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 rounded-lg text-left overflow-x-auto">
+                <p class="font-mono text-sm font-bold">Error: ${e.message}</p>
+                <p class="font-mono text-xs mt-2 opacity-80 whitespace-pre-wrap">${e.stack}</p>
+            </div>
+            <p class="mt-6 text-sm text-gray-500">Please take a screenshot of this error and send it to the administration.</p>
+        </div>`;
+    }
 }
 
 function handleProfileUpdate(e) {
@@ -479,6 +659,7 @@ function handleProfileUpdate(e) {
 
     const data = {
         gender: document.getElementById('s_gender').value,
+        dob: document.getElementById('s_dob') ? document.getElementById('s_dob').value : '',
         optionalSubject1: opt1,
         optionalSubject2: opt2,
         fatherName: document.getElementById('s_fname').value,
@@ -488,6 +669,14 @@ function handleProfileUpdate(e) {
         address: document.getElementById('s_address').value,
         profileComplete: true
     };
+    
+    // If the card was permanently deleted, let them generate a new one upon profile update
+    if (student && student.libraryCardRevoked) {
+        const existingCard = DB.getLibraryCards().find(c => String(c.rollNo) === String(student.rollNo) && String(c.year) === String(student.year));
+        if (!existingCard) {
+            data.libraryCardRevoked = false;
+        }
+    }
     
     // Save compulsory subjects
     const compulsorySubjects = [];
@@ -536,3 +725,20 @@ function closeStudentModal(modalId) {
         document.body.style.overflow = '';
     }
 }
+
+
+window.flipLibPage = (element) => {
+    element.classList.toggle('flipped');
+    
+    const wrapper = document.getElementById('libBookWrapper');
+    const totalPages = wrapper.querySelectorAll('.book-page').length;
+    const flippedCount = wrapper.querySelectorAll('.flipped').length;
+    
+    if (flippedCount === 0) {
+        wrapper.style.transform = 'translateX(0%)';
+    } else if (flippedCount === totalPages) {
+        wrapper.style.transform = 'translateX(100%)';
+    } else {
+        wrapper.style.transform = 'translateX(50%)';
+    }
+};

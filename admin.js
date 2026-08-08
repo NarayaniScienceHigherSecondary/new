@@ -519,6 +519,34 @@ function handleAddStudent(e) {
         regNo: "", councilRollNo: "", attendance: 0, profileComplete: false
     });
 
+    // Clear stale data for this rollNo in this year (from previous batches)
+    let exams = DB.getExams();
+    exams.forEach(e => {
+        if (e.targetYear === year && e.results && e.results[rollNo]) {
+            delete e.results[rollNo];
+        }
+    });
+    DB.set('exams', exams);
+
+    let classTests = DB.getClassTests();
+    classTests.forEach(t => {
+        if (t.targetYear === year && t.results && t.results[rollNo]) {
+            delete t.results[rollNo];
+        }
+    });
+    DB.set('classTests', classTests);
+
+    let attendance = DB.getAttendance();
+    attendance.forEach(a => {
+        if (a.targetYear === year && a.records && a.records[rollNo]) {
+            delete a.records[rollNo];
+        }
+    });
+    DB.set('attendance', attendance);
+
+    // Auto-generate library card immediately for the new student
+    // if (window.cleanUpLibraryCards) window.cleanUpLibraryCards();
+
     document.getElementById('addStudentModal').classList.add('hidden');
     
     // Refresh Student UI immediately
@@ -801,6 +829,7 @@ window.toggleAllStudentsLock = function(lock) {
 };
 
 window.deleteStudent = function(id, year) {
+    try {
     if(confirm(`Are you sure you want to completely delete the student account? This action cannot be undone.`)) {
         let allUsers = DB.getUsers();
         let allStudents = DB.getStudents();
@@ -828,12 +857,57 @@ window.deleteStudent = function(id, year) {
         DB.set('users', allUsers);
         DB.set('students', allStudents);
         
-        showToast('Student deleted successfully');
+        // Wipe library card
+        let libraryCards = DB.getLibraryCards();
+        if (libraryCards) {
+            libraryCards = libraryCards.filter(c => !(String(c.rollNo) === String(studentToDelete.rollNo) && c.year === studentToDelete.year));
+            DB.set('libraryCards', libraryCards);
+        }
+
+        // Wipe exam results
+        let exams = DB.getExams();
+        if (exams) {
+            exams.forEach(e => {
+                if (e.targetYear === studentToDelete.year && e.results && e.results[studentToDelete.rollNo]) {
+                    delete e.results[studentToDelete.rollNo];
+                }
+            });
+            DB.set('exams', exams);
+        }
+
+        // Wipe class tests
+        let classTests = DB.getClassTests();
+        if (classTests) {
+            classTests.forEach(t => {
+                if (t.targetYear === studentToDelete.year && t.results && t.results[studentToDelete.rollNo]) {
+                    delete t.results[studentToDelete.rollNo];
+                }
+            });
+            DB.set('classTests', classTests);
+        }
+
+        // Wipe attendance
+        let attendance = DB.getAttendance();
+        if (attendance) {
+            attendance.forEach(a => {
+                if (a.targetYear === studentToDelete.year && a.records && a.records[studentToDelete.rollNo]) {
+                    delete a.records[studentToDelete.rollNo];
+                }
+            });
+            DB.set('attendance', attendance);
+        }
+        
+        showToast('Student and all related data deleted successfully');
         navigate('admin_students'); // Refresh UI
+        }
+    } catch(err) {
+        console.error("Delete Error:", err);
+        alert("Delete failed: " + err.message);
     }
 }
 
 window.promote1stYearStudents = function() {
+    try {
     if(!confirm("⚠️ WARNING: This will PERMANENTLY DELETE all current '+2 2nd year' students (profiles and logins) and promote all '+2 1st year' students to 2nd year. This action cannot be undone! Are you absolutely sure?")) {
         return;
     }
@@ -859,14 +933,56 @@ window.promote1stYearStudents = function() {
         return true;
     });
 
+    // Get books to check clearance
+    const allBooks = DB.getLibraryBooks() || [];
+    const blockedStudents = [];
+
+    // Mark graduating 2nd year students' books as Past / Deleted so they don't get mixed up if roll numbers are reused
+    allBooks.forEach(b => {
+        if (b.studentYear === '+2 2nd year') {
+            b.studentYear = 'Past / Deleted';
+        }
+    });
+
     // Remove 2nd years from students array
     allStudents = allStudents.filter(s => s.year !== '+2 2nd year');
     
+    // Filter library cards to remove graduating 2nd years
+    let allLibraryCards = DB.getLibraryCards() || [];
+    allLibraryCards = allLibraryCards.filter(c => c.year !== '+2 2nd year');
+    
     // Promote 1st years
-    allStudents.forEach(s => {
+    let promotedCount = 0;
+    allStudents.forEach((s, index) => {
         if(!s.year || s.year === '+2 1st year') {
+            // Check library clearance
+            const hasUnreturnedBook = allBooks.some(b => String(b.studentRoll) === String(s.rollNo) && String(b.studentYear) === String(s.year) && b.status === 'Issued');
+            
+            if (hasUnreturnedBook) {
+                blockedStudents.push(`${s.name} (Roll: ${s.rollNo})`);
+                return; // Skip promotion for this student
+            }
+
+            // Update their library card to reflect the new year
+            const theirCard = allLibraryCards.find(c => String(c.rollNo) === String(s.rollNo));
+            
+            // Also update any of their library books to reflect the new year
+            allBooks.forEach(b => {
+                if (String(b.studentRoll) === String(s.rollNo) && b.studentYear === '+2 1st year') {
+                    b.studentYear = '+2 2nd year';
+                }
+            });
+            
             s.year = '+2 2nd year';
             s.profileComplete = false;
+            
+            if (theirCard) {
+                console.log('Promoting card for RollNo', s.rollNo, 'Old number:', theirCard.cardNumber);
+                theirCard.year = s.year;
+                console.log('Promoted card. New number:', theirCard.cardNumber);
+            } else {
+                console.warn('NO CARD FOUND during promotion for RollNo', s.rollNo);
+            }
             
             // Promote corresponding user record
             const userRec = allUsers.find(u => {
@@ -877,16 +993,35 @@ window.promote1stYearStudents = function() {
             if (userRec) {
                 userRec.year = '+2 2nd year';
             }
+            promotedCount++;
         }
     });
 
     // Save back to DB
     DB.set('users', allUsers);
     DB.set('students', allStudents);
+    DB.set('libraryCards', allLibraryCards);
     DB.set('attendance', []); // Reset attendance for the new academic year
     
-    showToast("Successfully promoted 1st year students, cleared the old batch, and reset attendance.");
+    DB.set('libraryBooks', allBooks); // Save updated book years
+    // DO NOT CLEAR LIBRARY BOOKS ON PROMOTION!
+    // We must preserve all book history (Returned and Issued).
+    // The library tracker will automatically move 2nd year students' books to "Past / Deleted"
+    // when their profiles are deleted, and will dynamically shift 1st year books to "2nd Year"
+    // based on the student's new promoted year! 
+    
+    DB.set('libraryFines', []); // Clear old library fines for the new academic year
+    
+    if (blockedStudents.length > 0) {
+        alert(`Successfully promoted ${promotedCount} students.\n\nWARNING: ${blockedStudents.length} students were BLOCKED from promotion because they have unreturned library books (No Clearance):\n\n${blockedStudents.join('\n')}`);
+    } else {
+        showToast("Successfully promoted 1st year students, cleared the old batch, and updated library cards.");
+    }
     navigate('admin_students'); // Refresh UI
+    } catch (e) {
+        console.error("Promotion Error:", e);
+        alert("An error occurred during promotion: " + e.message);
+    }
 };
 
 // --- Staff Management ---
@@ -961,7 +1096,20 @@ function renderAdminStaff() {
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Designation / Post</label>
-                            <input type="text" id="newStaffDesignation" placeholder="e.g. Principal, Lecturer in Odia" required class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <select id="newStaffDesignation" required class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                <option value="Principal">Principal</option>
+                                <option value="Office Clerk">Office Clerk</option>
+                                <option value="Physical Education Teacher (PET)">Physical Education Teacher (PET)</option>
+                                <option value="History Lecturer">History Lecturer</option>
+                                <option value="Political Science Lecturer">Political Science Lecturer</option>
+                                <option value="Economics Lecturer">Economics Lecturer</option>
+                                <option value="English Lecturer">English Lecturer</option>
+                                <option value="MIL (Odia) Lecturer">MIL (Odia) Lecturer</option>
+                                <option value="Education Lecturer">Education Lecturer</option>
+                                <option value="Guest Faculty">Guest Faculty</option>
+                                <option value="Librarian">Librarian</option>
+                                <option value="Peon">Peon</option>
+                            </select>
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Category</label>
@@ -1008,7 +1156,20 @@ function renderAdminStaff() {
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Designation / Post</label>
-                            <input type="text" id="editStaffDesignation" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <select id="editStaffDesignation" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                <option value="Principal">Principal</option>
+                                <option value="Office Clerk">Office Clerk</option>
+                                <option value="Physical Education Teacher (PET)">Physical Education Teacher (PET)</option>
+                                <option value="History Lecturer">History Lecturer</option>
+                                <option value="Political Science Lecturer">Political Science Lecturer</option>
+                                <option value="Economics Lecturer">Economics Lecturer</option>
+                                <option value="English Lecturer">English Lecturer</option>
+                                <option value="MIL (Odia) Lecturer">MIL (Odia) Lecturer</option>
+                                <option value="Education Lecturer">Education Lecturer</option>
+                                <option value="Guest Faculty">Guest Faculty</option>
+                                <option value="Librarian">Librarian</option>
+                                <option value="Peon">Peon</option>
+                            </select>
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Category</label>
@@ -1195,6 +1356,11 @@ function renderAdminNotices() {
                             <input type="checkbox" id="noticePinned" class="mr-2 text-primary">
                             <label class="text-sm font-medium">Pin this notice to top</label>
                         </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium mb-1">Attachment (Optional - Max 1MB)</label>
+                            <input type="file" id="noticeAttachment" accept=".pdf,.doc,.docx" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100 dark:file:bg-gray-700 dark:file:text-white">
+                            <p class="text-xs text-red-500 mt-1 hidden" id="noticeAttachmentError">File size exceeds 1MB limit.</p>
+                        </div>
                     </div>
                     <div class="mt-6 flex justify-end space-x-3">
                         <button type="button" onclick="document.getElementById('addNoticeModal').classList.add('hidden')" class="px-4 py-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg">Cancel</button>
@@ -1212,16 +1378,42 @@ function handleAddNotice(e) {
     const title = document.getElementById('noticeTitle').value;
     const content = document.getElementById('noticeContent').value;
     const pinned = document.getElementById('noticePinned').checked;
+    const attachmentInput = document.getElementById('noticeAttachment');
     const date = new Date().toISOString().split('T')[0];
+    const author = currentUser ? currentUser.name : 'Admin';
 
-    DB.addNotice({ title, content, pinned, date, author: currentUser ? currentUser.name : 'Admin' });
-    document.getElementById('addNoticeModal').classList.add('hidden');
-    document.getElementById('noticeTitle').value = '';
-    document.getElementById('noticeContent').value = '';
-    document.getElementById('noticePinned').checked = false;
-    
-    showToast('Notice published successfully!');
-    navigate('admin_notices');
+    const finishSave = (attachmentData = null, attachmentName = null, attachmentType = null) => {
+        DB.addNotice({ title, content, pinned, date, author, attachmentData, attachmentName, attachmentType });
+        document.getElementById('addNoticeModal').classList.add('hidden');
+        document.getElementById('noticeTitle').value = '';
+        document.getElementById('noticeContent').value = '';
+        document.getElementById('noticePinned').checked = false;
+        if(attachmentInput) attachmentInput.value = '';
+        
+        showToast('Notice published successfully!');
+        if(window.currentAdminView === 'notices' || !window.currentAdminView) {
+            renderUI();
+        } else {
+            navigate('admin_notices');
+        }
+    };
+
+    if (attachmentInput && attachmentInput.files && attachmentInput.files[0]) {
+        const file = attachmentInput.files[0];
+        if (file.size > 1048576) {
+            document.getElementById('noticeAttachmentError').classList.remove('hidden');
+            return;
+        }
+        document.getElementById('noticeAttachmentError').classList.add('hidden');
+        
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            finishSave(event.target.result, file.name, file.type);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        finishSave();
+    }
 }
 
 window.printNotice = (id) => {

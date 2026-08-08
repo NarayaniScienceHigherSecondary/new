@@ -84,12 +84,17 @@ function renderStaffDashboard() {
                         <i class="fas fa-bullhorn mr-3"></i>Staff Notices
                     </h3>
                     <div class="space-y-4">
-                        ${notices.length ? notices.slice(0, 4).map(n => `
+                        ${notices.length ? notices.slice(0, 4).map(n => {
+                            const isNew = n.createdAt && (Date.now() - new Date(n.createdAt).getTime() <= 48 * 60 * 60 * 1000);
+                            return `
                         <div onclick="openPublicNoticeModal('${n.id}')" class="cursor-pointer p-4 rounded-lg bg-gray-50 dark:bg-gray-800 border-l-4 border-primary hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-                            <h4 class="font-semibold text-gray-800 dark:text-white mb-1">${n.title}</h4>
+                            <h4 class="font-semibold text-gray-800 dark:text-white mb-1">
+                                ${n.title}
+                                ${isNew ? '<span class="bg-red-500 text-white text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ml-2 animate-pulse shadow-sm inline-block transform -translate-y-0.5">New</span>' : ''}
+                            </h4>
                             <span class="text-xs text-gray-500">${n.date}</span>
                         </div>
-                    `).join('') : '<p class="text-gray-500">No notices.</p>'}
+                    `}).join('') : '<p class="text-gray-500">No notices.</p>'}
                     </div>
                 </div>
             </div>

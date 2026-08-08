@@ -1,0 +1,30 @@
+::1 - - [04/Aug/2026 18:50:55] "GET / HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] "GET /data.js?v=231 HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] "GET /styles.css?v=17 HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] "GET /admin.js?v=231 HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] "GET /admin_formfillup.js?v=231 HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] "GET /admin_reports.js?v=231 HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] "GET /admin_seating.js?v=231 HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] "GET /admin_statement.js?v=231 HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] "GET /admin_dcr.js?v=231 HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] "GET /admin_cashbook.js?v=231 HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] "GET /admin_exams.js?v=231 HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] "GET /admin_certificate.js?v=231 HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] "GET /student.js?v=231 HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] "GET /student_exams.js?v=231 HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] "GET /staff.js?v=231 HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] "GET /app.js?v=231 HTTP/1.1" 200 -
+::1 - - [04/Aug/2026 18:50:55] code 404, message File not found
+::1 - - [04/Aug/2026 18:50:55] "GET /socket.io/?EIO=4&transport=polling&t=P_Cxp4h HTTP/1.1" 404 -
+::1 - - [04/Aug/2026 18:50:55] code 404, message File not found
+::1 - - [04/Aug/2026 18:50:55] "GET /favicon.ico HTTP/1.1" 404 -
+::1 - - [04/Aug/2026 18:50:56] code 404, message File not found
+::1 - - [04/Aug/2026 18:50:56] "GET /socket.io/?EIO=4&transport=polling&t=P_CxpOd HTTP/1.1" 404 -
+::1 - - [04/Aug/2026 18:50:59] code 404, message File not found
+::1 - - [04/Aug/2026 18:50:59] "GET /socket.io/?EIO=4&transport=polling&t=P_Cxq3P HTTP/1.1" 404 -
+::1 - - [04/Aug/2026 18:51:04] code 404, message File not found
+::1 - - [04/Aug/2026 18:51:04] "GET /socket.io/?EIO=4&transport=polling&t=P_CxrHd HTTP/1.1" 404 -
+::1 - - [04/Aug/2026 18:51:09] code 404, message File not found
+::1 - - [04/Aug/2026 18:51:09] "GET /socket.io/?EIO=4&transport=polling&t=P_CxsVq HTTP/1.1" 404 -
+::1 - - [04/Aug/2026 18:51:14] code 404, message File not found
+::1 - - [04/Aug/2026 18:51:14] "GET /socket.io/?EIO=4&transport=polling&t=P_Cxtk1 HTTP/1.1" 404 -

@@ -13,6 +13,9 @@ window._state = {
     dcrRecords: [],
     cashBookSettings: { openingBalance: 0 },
     cashBookTransactions: [],
+    libraryCards: [],
+    libraryBooks: [],
+    libraryFines: [],
     gallery: [],
     pendingResets: { dcr: null, cashbook: null }
 };
@@ -144,6 +147,29 @@ const DB = {
     getDcrRecords: () => DB.get('dcrRecords') || [],
     getCashBookSettings: () => DB.get('cashBookSettings') || DEFAULT_DATA.cashBookSettings,
     getCashBookTransactions: () => DB.get('cashBookTransactions') || [],
+    getLibraryCards: () => {
+        let cards = DB.get('libraryCards') || [];
+        let modified = false;
+        if (cards && Array.isArray(cards)) {
+            cards.forEach(c => {
+                if (c.cardNumber && c.cardNumber.startsWith('LIB-')) {
+                    const uniqueNum = Math.floor(100000 + Math.random() * 900000);
+                    c.cardNumber = `NSHSS-${uniqueNum}`;
+                    modified = true;
+                }
+            });
+            if (modified) {
+                // Save it back to localStorage (DB.set would cause an infinite loop if DB is referenced inside DB)
+                // Actually DB.set is safe because DB is already initialized
+                const str = JSON.stringify(cards);
+                localStorage.setItem('libraryCards', str);
+                if (window._state) window._state['libraryCards'] = cards;
+            }
+        }
+        return cards;
+    },
+    getLibraryBooks: () => DB.get('libraryBooks') || [],
+    getLibraryFines: () => DB.get('libraryFines') || [],
     getScholarships: () => DB.get('scholarships') || [],
     getSeatingArrangements: () => DB.get('seatingArrangements') || [],
     getPendingResets: () => {
@@ -248,8 +274,26 @@ const DB = {
             return String(s.rollNo) === String(id) && (s.year || '') === (year || '');
         });
         if(index !== -1) {
-            students[index] = { ...students[index], ...data };
+            const oldStudent = students[index];
+            const newStudent = { ...oldStudent, ...data };
+            students[index] = newStudent;
             DB.set('students', students);
+            
+            // Auto-update library card info if year, rollNo, or name changed
+            if (oldStudent.year !== newStudent.year || oldStudent.rollNo !== newStudent.rollNo || oldStudent.name !== newStudent.name) {
+                let cards = DB.getLibraryCards() || [];
+                const studentIdStr = String(newStudent.id || newStudent._id);
+                
+                cards.forEach(c => {
+                    if ((String(c.rollNo) === String(oldStudent.rollNo) && String(c.year) === String(oldStudent.year))) {
+                        
+                        c.year = newStudent.year;
+                        c.rollNo = newStudent.rollNo;
+                        c.studentName = newStudent.name;
+                    }
+                });
+                DB.set('libraryCards', cards);
+            }
         }
     },
     addStaff: (staff) => {
@@ -392,5 +436,147 @@ const DB = {
     resetCashBookTransactions: () => {
         DB.set('cashBookTransactions', []);
         DB.set('cashBookSettings', { openingBalance: 0 });
+    },
+
+    // --- Library Management ---
+    deleteLibraryCard: (cardId) => {
+        let cards = DB.getLibraryCards();
+        const card = cards.find(c => c.id === cardId || c.cardNumber === cardId);
+        if(!card) return;
+        
+        card.status = 'Deleted';
+        DB.set('libraryCards', cards);
+        
+        let students = DB.getStudents();
+        let student = students.find(s => String(s.rollNo) === String(card.rollNo) && String(s.year) === String(card.year));
+        if (student) {
+            student.libraryCardRevoked = true;
+            DB.set('students', students);
+        }
+    },
+    
+    createNewLibraryCard: (rollNo, year) => {
+        let students = DB.getStudents();
+        let student = students.find(s => String(s.rollNo) === String(rollNo) && String(s.year) === String(year));
+        if (!student) return;
+
+        let cards = DB.getLibraryCards() || [];
+        
+        // Remove any old/deleted cards for this student to prevent conflicts
+        cards = cards.filter(c => !(
+            (String(c.rollNo) === String(student.rollNo) && c.year === student.year)
+        ));
+        
+        // Generate unique NSHSS number for the library card
+        const uniqueNum = Math.floor(100000 + Math.random() * 900000);
+        const cardNo = `NSHSS-${uniqueNum}`;
+        
+        cards.push({
+            id: 'C' + Date.now() + Math.floor(Math.random() * 99999),
+            studentId: student.id || student._id,
+            studentName: student.name,
+            rollNo: student.rollNo,
+            year: student.year,
+            cardNumber: cardNo,
+            issueDate: new Date().toISOString().split('T')[0],
+            status: 'Active'
+        });
+        
+        DB.set('libraryCards', cards);
+        student.libraryCardRevoked = false;
+        DB.set('students', students);
+    },
+generateLibraryCard: (cardId) => {
+        let cards = DB.getLibraryCards();
+        const card = cards.find(c => c.id === cardId || c.cardNumber === cardId);
+        if(!card) return;
+        
+        card.status = 'Active';
+        card.issueDate = new Date().toISOString().split('T')[0];
+        DB.set('libraryCards', cards);
+        
+        let students = DB.getStudents();
+        let student = students.find(s => String(s.rollNo) === String(card.rollNo) && String(s.year) === String(card.year));
+        if (student) {
+            student.libraryCardRevoked = false;
+            DB.set('students', students);
+        }
+    },
+    suspendLibraryCard: (cardId) => {
+        let cards = DB.getLibraryCards();
+        const card = cards.find(c => c.id === cardId || c.cardNumber === cardId);
+        if(!card) return;
+        
+        card.status = 'Suspended';
+        DB.set('libraryCards', cards);
+        
+        let students = DB.getStudents();
+        let student = students.find(s => String(s.rollNo) === String(card.rollNo) && String(s.year) === String(card.year));
+        if (student) {
+            student.libraryCardRevoked = true;
+            DB.set('students', students);
+        }
+    },
+    renewLibraryCard: (cardId) => {
+        let cards = DB.getLibraryCards();
+        const card = cards.find(c => c.id === cardId || c.cardNumber === cardId);
+        if(!card) return;
+        
+        card.status = 'Active';
+        DB.set('libraryCards', cards);
+        
+        let students = DB.getStudents();
+        let student = students.find(s => String(s.rollNo) === String(card.rollNo) && String(s.year) === String(card.year));
+        if (student) {
+            student.libraryCardRevoked = false;
+            DB.set('students', students);
+        }
+    },
+    addLibraryCard: (card) => {
+        const cards = DB.getLibraryCards();
+        cards.push(card);
+        DB.set('libraryCards', cards);
+    },
+    addLibraryBook: (book) => {
+        const books = DB.getLibraryBooks();
+        books.push(book);
+        DB.set('libraryBooks', books);
+    },
+    addLibraryFine: (fine) => {
+        const fines = DB.getLibraryFines();
+        fines.push(fine);
+        DB.set('libraryFines', fines);
+    },
+    updateLibraryBook: (id, updates) => {
+        const books = DB.getLibraryBooks();
+        const index = books.findIndex(b => b.id === id);
+        if(index > -1) {
+            books[index] = { ...books[index], ...updates };
+            DB.set('libraryBooks', books);
+        }
+    },
+    deleteIssuedBook: (id) => {
+        let books = DB.getLibraryBooks();
+        books = books.filter(b => b.id !== id);
+        DB.set('libraryBooks', books);
     }
 };
+
+// Fallback for UI testing without Python backend (e.g., Live Server)
+setTimeout(() => {
+    if (!window.appInitialized) {
+        console.warn('Backend server not connected after 2 seconds. Starting in local UI preview mode...');
+        // Merge DEFAULT_DATA into state
+        Object.keys(DEFAULT_DATA).forEach(key => {
+            if (!window._state[key] || (Array.isArray(window._state[key]) && window._state[key].length === 0) || (typeof window._state[key] === 'object' && Object.keys(window._state[key]).length === 0)) {
+                window._state[key] = DEFAULT_DATA[key];
+            }
+        });
+        if (window.initApp) {
+            window.initApp();
+        } else {
+            // If app.js hasn't set initApp yet, wait a bit more
+            setTimeout(() => { if (window.initApp) window.initApp(); }, 500);
+        }
+    }
+}, 2000);
