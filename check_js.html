@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html><body>
+<script src="acorn.js"></script>
+<script>
+    async function checkFile(file) {
+        try {
+            const res = await fetch(file);
+            const code = await res.text();
+            acorn.parse(code, {ecmaVersion: 2020});
+            console.log(file + " OK");
+        } catch (e) {
+            console.error(file + " ERROR: " + e.message);
+        }
+    }
+    window.onload = async () => {
+        await checkFile('app.js');
+        await checkFile('admin.js');
+        await checkFile('data.js');
+    };
+</script>
+</body></html>

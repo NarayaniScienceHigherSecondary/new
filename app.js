@@ -204,7 +204,7 @@ window.printNotice = (id) => {
         </head>
         <body>
             <div class="header">
-                ${info.logoUrl ? \`<img src="${info.logoUrl}" class="college-logo" alt="Logo">\` : \`<div class="college-logo-fallback">${info.name.charAt(0)}</div>\`}
+                ${info.logoUrl ? `<img src="${info.logoUrl}" class="college-logo" alt="Logo">` : `<div class="college-logo-fallback">${info.name.charAt(0)}</div>`}
                 <h1 class="college-name">${info.name}</h1>
                 <div class="college-location">${info.address}</div>
             </div>

@@ -137,7 +137,7 @@ def api_login():
         import re
         # Force hardcoded admin credentials, bypassing DB entirely
         if str(user_id).lower() == 'admin':
-            if password == 'Jagannath#1234!' or password == '123':
+            if password == 'Jagannath#1234!':
                 user = {'id': 'admin', 'role': 'admin', 'name': 'System Administrator'}
                 token = jwt.encode({
                     'id': user.get('id'),
